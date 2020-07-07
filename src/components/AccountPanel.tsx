@@ -2,7 +2,8 @@
 import { Vue } from 'vue-property-decorator';
 import { User } from '@/store/modules/user';
 import Gavartar from './Gavartar';
-import './styles.css';
+import PasswordMeter from './PasswordMeter';
+import './styles.scss';
 
 const AccountPanel = Vue.extend({
   name: 'AccountPanel',
@@ -20,14 +21,52 @@ const AccountPanel = Vue.extend({
       password: this.user.password || '',
       isEditing: false,
       isShowPassword: false,
+      strength: 0,
+      err_msg: '',
     };
   },
   methods: {
     togglePasswordEye() {
       this.isShowPassword = !this.isShowPassword;
     },
+    calculatorStrength() {
+      let strength = 0;
+      if (this.password.length >= 7) {
+        strength += 1;
+      }
+      if (/d/.test(this.password)) {
+        strength += 1;
+      }
+      if (/[a-z]/.test(this.password)) {
+        strength += 1;
+      }
+      if (/[A-Z]/.test(this.password)) {
+        strength += 1;
+      }
+      if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(this.password)) {
+        strength += 1;
+      }
+      this.strength = strength;
+    },
     handleClick() {
       if (this.isEditing) {
+        // do validate
+        if (this.first_name === '') {
+          this.err_msg = 'first name is required';
+          return;
+        }
+        if (this.last_name === '') {
+          this.err_msg = 'last name is required';
+          return;
+        }
+        if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.email)) {
+          this.err_msg = 'you must input an right email address';
+          return;
+        }
+        if (this.strength < 5) {
+          this.err_msg = 'you must input a strong password';
+          return;
+        }
         // save data
         const params = {
           first_name: this.first_name,
@@ -60,6 +99,9 @@ const AccountPanel = Vue.extend({
             <div class="column is-4 is-offset-4">
                 <div class="field">
                   <label class="label title-s1">Your Account Information</label>
+                </div>
+                <div v-show={this.isEditing && this.err_msg} class="validate-error">
+                  { this.err_msg}
                 </div>
                 <div v-show={!this.isEditing} class="field has-text-centered">
                   { this.first_name } { this.last_name }
@@ -101,26 +143,31 @@ const AccountPanel = Vue.extend({
                     </span>
                   </div>
                 </div>
-                <div class="field">
-                    <p class="control has-icons-left">
-                        <input
-                          class="input"
-                          type={this.isShowPassword ? 'text' : 'password'}
-                          placeholder="Password"
-                          v-model={this.password}
-                          disabled={!this.isEditing}
-                        />
-                        <span class="icon is-small is-left">
-                          <i class="fas fa-lock"></i>
-                        </span>
-                        <span
-                          class={'icon is-small'}
-                          onClick={this.togglePasswordEye}
-                        >
-                          <i class={['fa fa-fw', `${this.isShowPassword ? 'fa-eye-slash' : 'fa-eye'}`]} />
-                        </span>
-                    </p>
+                <div class="field password-field">
+                  <p class="control has-icons-left">
+                      <input
+                        class="input"
+                        type={this.isShowPassword ? 'text' : 'password'}
+                        placeholder="Password"
+                        v-model={this.password}
+                        disabled={!this.isEditing}
+                        onInput={this.calculatorStrength}
+                      />
+                      <span class="icon is-small is-left">
+                        <i class="fas fa-lock"></i>
+                      </span>
+                  </p>
+                  <span
+                    class={'icon is-small eye-icon'}
+                    v-show={this.isEditing}
+                    onClick={this.togglePasswordEye}
+                  >
+                    <i class={['fa fa-fw', `${this.isShowPassword ? 'fa-eye' : 'fa-eye-slash'}`]} />
+                  </span>
                 </div>
+                {
+                  this.isEditing && <PasswordMeter strength={this.strength} />
+                }
                 <div>
                     <button
                       class="button is-link "
@@ -130,15 +177,17 @@ const AccountPanel = Vue.extend({
                       </span>
                       <span>{ this.isEditing ? 'Submit' : 'Edit' }</span>
                     </button>
-                    <button
-                      v-show={this.isEditing}
-                      class="button is-warning"
-                      onClick={this.handleCancel}>
-                        <span class="icon is-small">
-                          <i class="fas fa-times"></i>
-                        </span>
-                        <span> Cancel </span>
-                    </button>
+                    {
+                      this.isEditing
+                      && <button
+                        class="button is-warning"
+                        onClick={this.handleCancel}>
+                          <span class="icon is-small">
+                            <i class="fas fa-times"></i>
+                          </span>
+                          <span> Cancel </span>
+                      </button>
+                    }
                 </div>
             </div>
           </div>
