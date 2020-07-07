@@ -12,3 +12,15 @@ li {
 a {
   color: #42b983;
 }
+.title-s1 {
+  font-size: 18px;
+}
+.field-icon {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+.right {
+  right: 0px;
+} 
