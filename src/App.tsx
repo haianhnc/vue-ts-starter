@@ -1,4 +1,4 @@
-import './global.css';
+import './global.scss';
 import { Vue } from 'vue-property-decorator';
 
 const App = Vue.extend({

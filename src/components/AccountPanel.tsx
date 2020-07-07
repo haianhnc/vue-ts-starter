@@ -2,7 +2,7 @@
 import { Vue } from 'vue-property-decorator';
 import { User } from '@/store/modules/user';
 import Gavartar from './Gavartar';
-import './styles.css';
+import './styles.scss';
 
 const AccountPanel = Vue.extend({
   name: 'AccountPanel',
@@ -101,25 +101,26 @@ const AccountPanel = Vue.extend({
                     </span>
                   </div>
                 </div>
-                <div class="field">
-                    <p class="control has-icons-left">
-                        <input
-                          class="input"
-                          type={this.isShowPassword ? 'text' : 'password'}
-                          placeholder="Password"
-                          v-model={this.password}
-                          disabled={!this.isEditing}
-                        />
-                        <span class="icon is-small is-left">
-                          <i class="fas fa-lock"></i>
-                        </span>
-                        <span
-                          class={'icon is-small'}
-                          onClick={this.togglePasswordEye}
-                        >
-                          <i class={['fa fa-fw', `${this.isShowPassword ? 'fa-eye-slash' : 'fa-eye'}`]} />
-                        </span>
-                    </p>
+                <div class="field password-field">
+                  <p class="control has-icons-left">
+                      <input
+                        class="input"
+                        type={this.isShowPassword ? 'text' : 'password'}
+                        placeholder="Password"
+                        v-model={this.password}
+                        disabled={!this.isEditing}
+                      />
+                      <span class="icon is-small is-left">
+                        <i class="fas fa-lock"></i>
+                      </span>
+                  </p>
+                  <span
+                    class={'icon is-small eye-icon'}
+                    v-show={this.isEditing}
+                    onClick={this.togglePasswordEye}
+                  >
+                    <i class={['fa fa-fw', `${this.isShowPassword ? 'fa-eye' : 'fa-eye-slash'}`]} />
+                  </span>
                 </div>
                 <div>
                     <button
