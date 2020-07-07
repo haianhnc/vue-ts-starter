@@ -18,6 +18,7 @@ setup.
 word-based, or visual.
 - [ ] Source should be documented and versioned.
 
+![oke](https://user-images.githubusercontent.com/48817195/86762802-1555bf80-c071-11ea-939c-153a7db2976e.jpg)
 # Build Setup
 
 ``` bash
